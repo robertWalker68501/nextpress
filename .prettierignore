@@ -3,6 +3,8 @@ app/generated/prisma
 coverage
 node_modules
 out
+test-results
+playwright-report
 
 # Local agent reference material is not application source.
 .agents
