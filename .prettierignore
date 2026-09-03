@@ -1,0 +1,9 @@
+.next
+app/generated/prisma
+coverage
+node_modules
+out
+
+# Local agent reference material is not application source.
+.agents
+.claude

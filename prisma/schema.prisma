@@ -1,0 +1,320 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMINISTRATOR
+  EDITOR
+  AUTHOR
+  CONTRIBUTOR
+  SUBSCRIBER
+}
+
+enum ContentType {
+  POST
+  PAGE
+}
+
+enum ContentStatus {
+  DRAFT
+  PENDING_REVIEW
+  SCHEDULED
+  PUBLISHED
+  PRIVATE
+  TRASH
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  SPAM
+  TRASH
+}
+
+enum CommentPolicy {
+  OPEN
+  CLOSED
+}
+
+enum TermType {
+  CATEGORY
+  TAG
+}
+
+model User {
+  id                String            @id
+  name              String
+  email             String
+  emailVerified     Boolean           @default(false)
+  image             String?
+  role              UserRole          @default(SUBSCRIBER)
+  displayName       String?
+  bio               String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  authoredContent   Content[]         @relation("ContentAuthor")
+  contentRevisions  ContentRevision[] @relation("RevisionAuthor")
+  uploadedMedia     Media[]           @relation("MediaUploader")
+  comments          Comment[]         @relation("CommentAuthor")
+  moderatedComments Comment[]         @relation("CommentModerator")
+
+  @@unique([email])
+  @@index([role])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  issuer                String
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Content {
+  id              String        @id @default(cuid())
+  type            ContentType
+  status          ContentStatus @default(DRAFT)
+  title           String
+  slug            String
+  excerpt         String?
+  body            String        @default("")
+  passwordHash    String?
+  authorId        String
+  parentId        String?
+  featuredMediaId String?
+  commentPolicy   CommentPolicy @default(OPEN)
+  menuOrder       Int           @default(0)
+  publishedAt     DateTime?
+  scheduledAt     DateTime?
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  author        User              @relation("ContentAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  parent        Content?          @relation("ContentHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children      Content[]         @relation("ContentHierarchy")
+  featuredMedia Media?            @relation(fields: [featuredMediaId], references: [id], onDelete: SetNull)
+  revisions     ContentRevision[]
+  terms         ContentTerm[]
+  comments      Comment[]
+  menuItems     MenuItem[]
+
+  @@unique([type, slug])
+  @@index([type, status, deletedAt])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([featuredMediaId])
+  @@index([scheduledAt])
+  @@index([publishedAt])
+  @@index([deletedAt])
+  @@map("content")
+}
+
+model ContentRevision {
+  id             String        @id @default(cuid())
+  contentId      String
+  revisionNumber Int
+  title          String
+  excerpt        String?
+  body           String
+  statusSnapshot ContentStatus
+  authorId       String
+  createdAt      DateTime      @default(now())
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  author  User    @relation("RevisionAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@unique([contentId, revisionNumber])
+  @@index([contentId, createdAt(sort: Desc)])
+  @@index([authorId])
+  @@map("content_revision")
+}
+
+model Term {
+  id          String   @id @default(cuid())
+  type        TermType
+  name        String
+  slug        String
+  description String?
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent   Term?         @relation("TermHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children Term[]        @relation("TermHierarchy")
+  contents ContentTerm[]
+
+  @@unique([type, slug])
+  @@index([type, parentId])
+  @@map("term")
+}
+
+model ContentTerm {
+  contentId String
+  termId    String
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  term    Term    @relation(fields: [termId], references: [id], onDelete: Cascade)
+
+  @@id([contentId, termId])
+  @@index([termId])
+  @@map("content_term")
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  storageKey   String    @unique
+  url          String
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  width        Int?
+  height       Int?
+  altText      String?
+  caption      String?
+  description  String?
+  uploadedById String
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  uploadedBy User       @relation("MediaUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+  featuredOn Content[]
+  menuItems  MenuItem[]
+
+  @@index([uploadedById])
+  @@index([deletedAt])
+  @@index([mimeType])
+  @@map("media")
+}
+
+model Comment {
+  id            String        @id @default(cuid())
+  contentId     String
+  parentId      String?
+  status        CommentStatus @default(PENDING)
+  body          String
+  authorUserId  String?
+  authorName    String
+  authorEmail   String
+  authorUrl     String?
+  authorIp      String?
+  moderatedById String?
+  moderatedAt   DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  content     Content   @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  parent      Comment?  @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[] @relation("CommentThread")
+  author      User?     @relation("CommentAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+  moderatedBy User?     @relation("CommentModerator", fields: [moderatedById], references: [id], onDelete: SetNull)
+
+  @@index([contentId, status, deletedAt])
+  @@index([parentId])
+  @@index([authorUserId])
+  @@index([moderatedById])
+  @@index([createdAt])
+  @@map("comment")
+}
+
+model Menu {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  items     MenuItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("menu")
+}
+
+model MenuItem {
+  id           String   @id @default(cuid())
+  menuId       String
+  label        String
+  sortOrder    Int      @default(0)
+  openInNewTab Boolean  @default(false)
+  parentId     String?
+  url          String?
+  contentId    String?
+  mediaId      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  menu     Menu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  parent   MenuItem?  @relation("MenuItemHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children MenuItem[] @relation("MenuItemHierarchy")
+  content  Content?   @relation(fields: [contentId], references: [id], onDelete: SetNull)
+  media    Media?     @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+
+  @@index([menuId, parentId, sortOrder])
+  @@index([contentId])
+  @@index([mediaId])
+  @@map("menu_item")
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_setting")
+}
