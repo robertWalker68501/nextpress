@@ -12,7 +12,7 @@ export async function getAccountOverview(userId: string, email: string) {
     OR: [{ authorUserId: userId }, { authorEmail: email }],
   };
 
-  const [posts, published, pendingReview, comments] = await Promise.all([
+  const [posts, published, pendingReview, comments, media] = await Promise.all([
     prisma.content.count({
       where: {
         authorId: userId,
@@ -44,9 +44,15 @@ export async function getAccountOverview(userId: string, email: string) {
         status: { not: CommentStatus.TRASH },
       },
     }),
+    prisma.media.count({
+      where: {
+        uploadedById: userId,
+        deletedAt: null,
+      },
+    }),
   ]);
 
-  return { posts, published, pendingReview, comments };
+  return { posts, published, pendingReview, comments, media };
 }
 
 export async function listAccountPosts(userId: string) {

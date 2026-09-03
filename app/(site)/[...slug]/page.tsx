@@ -20,6 +20,8 @@ const reservedSegments = new Set([
   'tag',
   'author',
   'search',
+  'blog',
+  'account',
   'sign-in',
   'sign-up',
   'forgot-password',

@@ -27,6 +27,13 @@ describe('role capabilities', () => {
     expect(hasCapability(UserRole.SUBSCRIBER, 'uploadFiles')).toBe(true);
   });
 
+  it('lets contributors upload files for their own content', () => {
+    expect(hasCapability(UserRole.CONTRIBUTOR, 'uploadFiles')).toBe(true);
+    expect(hasCapability(UserRole.CONTRIBUTOR, 'editOthersContent')).toBe(
+      false
+    );
+  });
+
   it('allows contributors to edit only their own unpublished content', () => {
     const contributor = { id: 'author-1', role: UserRole.CONTRIBUTOR };
 

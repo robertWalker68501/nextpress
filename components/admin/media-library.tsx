@@ -30,7 +30,19 @@ function parseType(value?: string): MediaTypeFilter {
   return 'all';
 }
 
-export async function MediaLibrary({ query }: { query: MediaListQuery }) {
+export async function MediaLibrary({
+  query,
+  basePath = '/admin/media',
+  ownerOnly = false,
+  title = 'Media',
+  description = 'Upload, organize, and reuse files across your site.',
+}: {
+  query: MediaListQuery;
+  basePath?: string;
+  ownerOnly?: boolean;
+  title?: string;
+  description?: string;
+}) {
   const actor = await requireCapability('uploadFiles');
   const page = Math.max(1, Number.parseInt(query.page ?? '1', 10) || 1);
   const includeTrash = query.trash === 'true';
@@ -41,6 +53,7 @@ export async function MediaLibrary({ query }: { query: MediaListQuery }) {
     search: query.q?.trim() || undefined,
     type,
     includeTrash,
+    ownerOnly,
   });
 
   function pageHref(nextPage: number) {
@@ -50,18 +63,16 @@ export async function MediaLibrary({ query }: { query: MediaListQuery }) {
     if (includeTrash) params.set('trash', 'true');
     if (nextPage > 1) params.set('page', String(nextPage));
     const search = params.toString();
-    return `/admin/media${search ? `?${search}` : ''}`;
+    return `${basePath}${search ? `?${search}` : ''}`;
   }
 
   return (
     <div className='grid gap-6'>
       <div>
         <h1 className='font-heading text-3xl font-bold tracking-tight'>
-          Media
+          {title}
         </h1>
-        <p className='text-muted-foreground mt-1'>
-          Upload, organize, and reuse files across your site.
-        </p>
+        <p className='text-muted-foreground mt-1'>{description}</p>
       </div>
 
       {!includeTrash ? <MediaUploadPanel /> : null}

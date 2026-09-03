@@ -21,6 +21,7 @@ export default async function AccountPage() {
     { label: 'Published', value: stats.published },
     { label: 'Pending review', value: stats.pendingReview },
     { label: 'Comments', value: stats.comments },
+    { label: 'Media', value: stats.media },
   ];
 
   return (
@@ -42,7 +43,7 @@ export default async function AccountPage() {
         </Link>
       </div>
 
-      <section className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
+      <section className='grid gap-4 sm:grid-cols-2 xl:grid-cols-5'>
         {cards.map((card) => (
           <Card key={card.label}>
             <CardHeader>

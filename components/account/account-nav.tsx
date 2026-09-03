@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 const links = [
   { href: '/account', label: 'Overview' },
   { href: '/account/posts', label: 'Posts' },
+  { href: '/account/media', label: 'Media' },
   { href: '/account/comments', label: 'Comments' },
   { href: '/account/settings', label: 'Settings' },
 ] as const;

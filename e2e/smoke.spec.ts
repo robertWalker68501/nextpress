@@ -7,6 +7,12 @@ test.describe('public site smoke', () => {
     await expect(page.locator('img[src*="logo-light.png"]')).toBeVisible();
   });
 
+  test('blog page lists posts', async ({ page }) => {
+    await page.goto('/blog');
+    await expect(page.getByRole('heading', { name: 'Blog' })).toBeVisible();
+    await expect(page.getByLabel('Posts per page')).toBeVisible();
+  });
+
   test('feed is available', async ({ request }) => {
     const response = await request.get('/feed.xml');
     expect(response.ok()).toBeTruthy();

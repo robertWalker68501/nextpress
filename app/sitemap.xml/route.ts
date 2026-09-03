@@ -9,6 +9,10 @@ export async function GET() {
 
   const urls = [
     { loc: baseUrl, lastmod: new Date().toISOString() },
+    {
+      loc: new URL('/blog', baseUrl).toString(),
+      lastmod: new Date().toISOString(),
+    },
     ...content.map((entry) => ({
       loc: new URL(
         entry.type === ContentType.PAGE

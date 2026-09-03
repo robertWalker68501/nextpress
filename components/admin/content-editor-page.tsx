@@ -14,6 +14,7 @@ import {
   getContentForEditor,
   getEditorOptions,
 } from '@/lib/cms/content-queries';
+import { listReusableImages } from '@/lib/cms/media-queries';
 import type { ContentEditorInput } from '@/lib/cms/validation';
 import { getAvailableStatuses } from '@/lib/cms/workflow';
 
@@ -35,7 +36,12 @@ export async function ContentEditorPage({
 
   if (id && (!content || content.type !== type)) notFound();
 
-  const { categories, parentPages } = await getEditorOptions(type, id);
+  const [{ categories, parentPages }, reusableImages] = await Promise.all([
+    getEditorOptions(type, id),
+    listReusableImages(actor, {
+      ownerOnly: redirectBase?.startsWith('/account'),
+    }),
+  ]);
   const subject = content ?? {
     authorId: actor.id,
     status: ContentStatus.DRAFT,
@@ -122,6 +128,13 @@ export async function ContentEditorPage({
         }))}
         redirectBase={redirectBase}
         saveAction={saveAction}
+        libraryImages={reusableImages.map((image) => ({
+          key: image.storageKey,
+          name: image.filename,
+          url: image.url,
+          size: image.sizeBytes,
+          type: image.mimeType,
+        }))}
       />
 
       {content && showRevisions ? (

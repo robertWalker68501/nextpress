@@ -51,6 +51,7 @@ async function MenusContent({ searchParams }: MenusPageProps) {
       </div>
 
       <MenuManager
+        key={data.menu.id}
         menuId={data.menu.id}
         menuName={data.menu.name}
         initialItems={data.menu.items}

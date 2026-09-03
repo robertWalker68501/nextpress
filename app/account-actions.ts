@@ -20,9 +20,12 @@ import prisma from '@/lib/prisma';
 function refreshAccountRoutes() {
   updateTag('content');
   updateTag('comments');
+  updateTag('media');
   revalidatePath('/');
+  revalidatePath('/blog');
   revalidatePath('/account');
   revalidatePath('/account/posts');
+  revalidatePath('/account/media');
   revalidatePath('/account/comments');
   revalidatePath('/account/settings');
 }

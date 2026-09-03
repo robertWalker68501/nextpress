@@ -6,7 +6,7 @@ import { requireUser } from '@/lib/auth/session';
 export function AccountNavSkeleton() {
   return (
     <div className='flex flex-wrap gap-2 lg:flex-col'>
-      {Array.from({ length: 4 }).map((_, index) => (
+      {Array.from({ length: 5 }).map((_, index) => (
         <Skeleton
           key={index}
           className='h-9 w-28 rounded-md lg:w-full'

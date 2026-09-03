@@ -9,7 +9,10 @@ import { saveContentAction } from '@/app/admin/content-actions';
 import type { ActionResult } from '@/lib/cms/validation';
 import { ContentType } from '@/app/generated/prisma/client';
 import { getContentStatusLabel } from '@/components/admin/content-status-badge';
-import { FileUploadField } from '@/components/form-fields/FileUploadField';
+import {
+  FeaturedMediaPicker,
+  type LibraryImageOption,
+} from '@/components/admin/featured-media-picker';
 import { FormFieldControl } from '@/components/form-fields/FormFieldControl';
 import { MultiSelectField } from '@/components/form-fields/MultiSelectField';
 import { TagInputField } from '@/components/form-fields/TagInputField';
@@ -41,6 +44,7 @@ export function ContentEditorForm({
   parentPages,
   redirectBase,
   saveAction = saveContentAction,
+  libraryImages = [],
 }: {
   defaultValues: ContentEditorInput;
   availableStatuses: ContentStatus[];
@@ -50,6 +54,7 @@ export function ContentEditorForm({
   saveAction?: (
     input: unknown
   ) => Promise<ActionResult<{ id: string; type: ContentType }>>;
+  libraryImages?: LibraryImageOption[];
 }) {
   const router = useRouter();
   const form = useForm<ContentEditorInput>({
@@ -258,12 +263,14 @@ export function ContentEditorForm({
               <CardTitle>Featured image</CardTitle>
             </CardHeader>
             <CardContent>
-              <FileUploadField
+              <FeaturedMediaPicker
                 control={form.control}
-                name='featuredImage'
-                label='Image'
-                mode='image'
-                maxFiles={1}
+                images={libraryImages}
+                libraryHref={
+                  redirectBase?.startsWith('/account')
+                    ? '/account/media'
+                    : '/admin/media'
+                }
               />
             </CardContent>
           </Card>

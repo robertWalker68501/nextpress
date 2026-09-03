@@ -34,6 +34,36 @@ async function getReferenceCount(mediaId: string) {
   return (media?._count.featuredOn ?? 0) + (media?._count.menuItems ?? 0);
 }
 
+export async function registerUploadedFileRecord(
+  uploadedById: string,
+  file: {
+    key: string;
+    url: string;
+    name: string;
+    type?: string;
+    size: number;
+  }
+) {
+  return prisma.media.upsert({
+    where: { storageKey: file.key },
+    create: {
+      storageKey: file.key,
+      url: file.url,
+      filename: file.name,
+      mimeType: file.type || 'application/octet-stream',
+      sizeBytes: file.size,
+      uploadedById,
+    },
+    update: {
+      url: file.url,
+      filename: file.name,
+      mimeType: file.type || 'application/octet-stream',
+      sizeBytes: file.size,
+      deletedAt: null,
+    },
+  });
+}
+
 export async function registerMediaRecords(
   actor: Actor,
   files: MediaUploadInput

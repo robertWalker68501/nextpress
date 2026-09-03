@@ -2,6 +2,7 @@ import 'server-only';
 
 import { type UserRole } from '@/app/generated/prisma/client';
 import { hasCapability } from '@/lib/auth/capabilities';
+import { mediaVisibilityWhere } from '@/lib/cms/media-visibility';
 import prisma from '@/lib/prisma';
 
 type Actor = {
@@ -41,6 +42,7 @@ export async function listMediaForAdmin({
   search,
   type = 'all',
   includeTrash = false,
+  ownerOnly = false,
 }: {
   actor: Actor;
   page?: number;
@@ -48,12 +50,11 @@ export async function listMediaForAdmin({
   search?: string;
   type?: MediaTypeFilter;
   includeTrash?: boolean;
+  ownerOnly?: boolean;
 }) {
   const where = {
     ...(includeTrash ? { deletedAt: { not: null } } : { deletedAt: null }),
-    ...(!hasCapability(actor.role, 'editOthersContent')
-      ? { uploadedById: actor.id }
-      : {}),
+    ...mediaVisibilityWhere(actor, ownerOnly),
     ...getMimeFilter(type),
     ...(search
       ? {
@@ -125,4 +126,33 @@ export async function getMediaForEdit(actor: Actor, id: string) {
   }
 
   return media;
+}
+
+export async function listReusableImages(
+  actor: Actor,
+  {
+    ownerOnly = false,
+    take = 24,
+  }: {
+    ownerOnly?: boolean;
+    take?: number;
+  } = {}
+) {
+  return prisma.media.findMany({
+    where: {
+      deletedAt: null,
+      mimeType: { startsWith: 'image/' },
+      ...mediaVisibilityWhere(actor, ownerOnly),
+    },
+    orderBy: { createdAt: 'desc' },
+    take,
+    select: {
+      storageKey: true,
+      filename: true,
+      url: true,
+      sizeBytes: true,
+      mimeType: true,
+      altText: true,
+    },
+  });
 }

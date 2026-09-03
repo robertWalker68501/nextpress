@@ -19,6 +19,8 @@ import {
 function refreshMediaRoutes() {
   updateTag('media');
   revalidatePath('/admin/media');
+  revalidatePath('/account/media');
+  revalidatePath('/account');
 }
 
 function getErrorMessage(error: unknown) {

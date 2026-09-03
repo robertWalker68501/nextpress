@@ -18,6 +18,7 @@ function refreshContentRoutes() {
   updateTag('terms');
   revalidatePath('/');
   revalidatePath('/search');
+  revalidatePath('/blog');
   revalidatePath('/feed.xml');
   revalidatePath('/sitemap.xml');
   revalidatePath('/admin');

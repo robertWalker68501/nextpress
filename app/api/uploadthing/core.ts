@@ -4,7 +4,9 @@ import { UploadThingError } from 'uploadthing/server';
 import { UserRole } from '@/app/generated/prisma/client';
 import { hasCapability } from '@/lib/auth/capabilities';
 import { auth } from '@/lib/auth';
+import { registerUploadedFileRecord } from '@/lib/cms/media-mutations';
 import prisma from '@/lib/prisma';
+import { updateTag } from 'next/cache';
 
 const f = createUploadthing();
 
@@ -50,6 +52,34 @@ async function requireUploadUser(req: Request) {
   };
 }
 
+async function persistUpload(
+  userId: string,
+  file: {
+    key: string;
+    name: string;
+    size: number;
+    type: string;
+    ufsUrl?: string;
+    url?: string;
+  }
+) {
+  const url = file.ufsUrl ?? file.url;
+  if (!url) return;
+
+  try {
+    await registerUploadedFileRecord(userId, {
+      key: file.key,
+      url,
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    });
+    updateTag('media');
+  } catch (error) {
+    console.error('Failed to register uploaded media.', error);
+  }
+}
+
 export const ourFileRouter = {
   /**
    * Used by the TinyMCE editor and by FileUploadField when
@@ -69,6 +99,7 @@ export const ourFileRouter = {
       return requireUploadUser(req);
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      await persistUpload(metadata.userId, file);
       return {
         uploadedBy: metadata.userId,
         key: file.key,
@@ -103,6 +134,7 @@ export const ourFileRouter = {
       return requireUploadUser(req);
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      await persistUpload(metadata.userId, file);
       return {
         uploadedBy: metadata.userId,
         key: file.key,
@@ -129,6 +161,7 @@ export const ourFileRouter = {
       return requireUploadUser(req);
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      await persistUpload(metadata.userId, file);
       return {
         uploadedBy: metadata.userId,
         key: file.key,
@@ -153,6 +186,7 @@ export const ourFileRouter = {
       return requireUploadUser(req);
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      await persistUpload(metadata.userId, file);
       return {
         uploadedBy: metadata.userId,
         key: file.key,

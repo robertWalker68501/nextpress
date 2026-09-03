@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { ArrowRight } from 'lucide-react';
 
 import { ContentBody } from '@/components/public/content-body';
+import { PostCardGrid } from '@/components/public/post-card';
 import { Button } from '@/components/ui/button';
 import {
   HOME_MEDIA_FILENAMES,
@@ -14,7 +13,6 @@ import {
   listPublishedPosts,
   type PublicContent,
 } from '@/lib/cms/public-queries';
-import { getPostUrl } from '@/lib/cms/public-urls';
 import { sanitizePlainText } from '@/lib/cms/sanitize';
 
 const FEATURES = [
@@ -201,66 +199,15 @@ export async function HomeLanding({ content }: { content: PublicContent }) {
             <Button
               variant='outline'
               nativeButton={false}
-              render={<Link href='/search' />}
+              render={<Link href='/blog' />}
             >
-              Search the archive
+              View all posts
             </Button>
           </div>
-          <div className='grid gap-6 md:grid-cols-2 xl:grid-cols-3'>
-            {posts.items.map((post) => {
-              const authorName =
-                post.author?.displayName ?? post.author?.name ?? null;
-
-              return (
-                <article
-                  key={post.id}
-                  className='bg-card overflow-hidden rounded-2xl border shadow-xs'
-                >
-                  {post.featuredMedia ? (
-                    <Image
-                      src={post.featuredMedia.url}
-                      alt={post.featuredMedia.altText ?? post.title}
-                      width={1200}
-                      height={800}
-                      sizes='(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw'
-                      className='aspect-16/10 w-full object-cover'
-                    />
-                  ) : null}
-                  <div className='grid gap-3 p-6'>
-                    {post.publishedAt ? (
-                      <time
-                        dateTime={post.publishedAt.toISOString()}
-                        className='text-muted-foreground text-sm'
-                      >
-                        {format(post.publishedAt, 'MMMM d, yyyy')}
-                        {authorName ? ` · ${authorName}` : ''}
-                      </time>
-                    ) : null}
-                    <h3 className='font-heading text-xl font-semibold tracking-tight'>
-                      <Link
-                        href={getPostUrl(post.slug)}
-                        className='hover:text-primary'
-                      >
-                        {post.title}
-                      </Link>
-                    </h3>
-                    {post.excerpt ? (
-                      <p className='text-muted-foreground leading-7'>
-                        {post.excerpt}
-                      </p>
-                    ) : null}
-                    <Link
-                      href={getPostUrl(post.slug)}
-                      className='text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline'
-                    >
-                      Continue reading
-                      <ArrowRight className='size-4' />
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+          <PostCardGrid
+            items={posts.items}
+            headingLevel='h3'
+          />
         </section>
       ) : null}
 

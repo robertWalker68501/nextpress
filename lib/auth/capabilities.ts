@@ -41,6 +41,7 @@ const roleCapabilities = {
     'accessAdmin',
     'editContent',
     'deleteContent',
+    'uploadFiles',
   ]),
   [UserRole.SUBSCRIBER]: new Set<Capability>([
     'editContent',
