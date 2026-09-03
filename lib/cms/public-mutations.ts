@@ -18,6 +18,7 @@ export async function submitPublicComment(input: {
   body: string;
   parentId?: string;
   honeypot?: string;
+  authorUserId?: string;
 }) {
   if (input.honeypot?.trim()) {
     return { ok: true as const, message: 'Comment submitted for review.' };
@@ -65,6 +66,7 @@ export async function submitPublicComment(input: {
       parentId: input.parentId ?? null,
       status: initialStatus,
       body: sanitizePlainText(input.body) ?? '',
+      authorUserId: input.authorUserId ?? null,
       authorName: sanitizePlainText(input.authorName) ?? 'Anonymous',
       authorEmail: input.authorEmail.trim().toLowerCase(),
       authorUrl: sanitizePlainText(input.authorUrl) ?? null,

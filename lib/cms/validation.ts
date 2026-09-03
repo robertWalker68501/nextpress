@@ -116,6 +116,12 @@ export const menuEditorSchema = z.object({
   items: z.array(menuItemSchema),
 });
 
+export const accountProfileSchema = z.object({
+  name: z.string().trim().min(2, 'Name must be at least 2 characters.').max(80),
+  displayName: z.string().trim().max(80),
+  bio: z.string().trim().max(500),
+});
+
 export type ContentEditorInput = z.infer<typeof contentEditorSchema>;
 export type TermEditorInput = z.infer<typeof termEditorSchema>;
 export type MediaEditorInput = z.infer<typeof mediaEditorSchema>;
@@ -124,6 +130,7 @@ export type CommentReplyInput = z.infer<typeof commentReplySchema>;
 export type PublicCommentInput = z.infer<typeof publicCommentSchema>;
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 export type MenuEditorInput = z.infer<typeof menuEditorSchema>;
+export type AccountProfileInput = z.infer<typeof accountProfileSchema>;
 
 export type ActionResult<T = undefined> =
   | { ok: true; data: T; message: string }

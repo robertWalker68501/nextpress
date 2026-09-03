@@ -42,7 +42,11 @@ const roleCapabilities = {
     'editContent',
     'deleteContent',
   ]),
-  [UserRole.SUBSCRIBER]: new Set<Capability>(),
+  [UserRole.SUBSCRIBER]: new Set<Capability>([
+    'editContent',
+    'deleteContent',
+    'uploadFiles',
+  ]),
 } satisfies Record<UserRole, ReadonlySet<Capability>>;
 
 export function hasCapability(role: UserRole, capability: Capability) {

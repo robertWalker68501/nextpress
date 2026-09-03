@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { io } from 'next/cache';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -38,6 +39,10 @@ export type CurrentUser = {
 };
 
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
+  // Better Auth reads cookie expiry with `new Date()`. Keep that out of the
+  // prerender so Cache Components does not treat the session as unstable.
+  await io();
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });

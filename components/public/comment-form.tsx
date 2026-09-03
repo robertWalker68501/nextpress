@@ -13,7 +13,16 @@ import {
   publicCommentSchema,
 } from '@/lib/cms/validation';
 
-export function CommentForm({ contentId }: { contentId: string }) {
+export function CommentForm({
+  contentId,
+  user,
+}: {
+  contentId: string;
+  user?: {
+    name: string;
+    email: string;
+  } | null;
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
@@ -22,8 +31,8 @@ export function CommentForm({ contentId }: { contentId: string }) {
     resolver: zodResolver(publicCommentSchema),
     defaultValues: {
       contentId,
-      authorName: '',
-      authorEmail: '',
+      authorName: user?.name ?? '',
+      authorEmail: user?.email ?? '',
       authorUrl: '',
       body: '',
       honeypot: '',
@@ -38,8 +47,8 @@ export function CommentForm({ contentId }: { contentId: string }) {
         setMessage(result.message);
         form.reset({
           contentId,
-          authorName: '',
-          authorEmail: '',
+          authorName: user?.name ?? '',
+          authorEmail: user?.email ?? '',
           authorUrl: '',
           body: '',
           honeypot: '',
@@ -73,29 +82,37 @@ export function CommentForm({ contentId }: { contentId: string }) {
         {...form.register('honeypot')}
       />
 
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <FormFieldControl
-          control={form.control}
-          name='authorName'
-          type='text'
-          label='Name'
-          required
-        />
-        <FormFieldControl
-          control={form.control}
-          name='authorEmail'
-          type='email'
-          label='Email'
-          required
-        />
-      </div>
-      <FormFieldControl
-        control={form.control}
-        name='authorUrl'
-        type='url'
-        label='Website'
-        placeholder='https://example.com'
-      />
+      {user ? (
+        <p className='text-muted-foreground text-sm'>
+          Commenting as {user.name}.
+        </p>
+      ) : (
+        <>
+          <div className='grid gap-4 sm:grid-cols-2'>
+            <FormFieldControl
+              control={form.control}
+              name='authorName'
+              type='text'
+              label='Name'
+              required
+            />
+            <FormFieldControl
+              control={form.control}
+              name='authorEmail'
+              type='email'
+              label='Email'
+              required
+            />
+          </div>
+          <FormFieldControl
+            control={form.control}
+            name='authorUrl'
+            type='url'
+            label='Website'
+            placeholder='https://example.com'
+          />
+        </>
+      )}
       <FormFieldControl
         control={form.control}
         name='body'

@@ -7,10 +7,10 @@ describe('authentication validation', () => {
     expect(getSafeCallbackURL('/admin/posts?status=draft')).toBe(
       '/admin/posts?status=draft'
     );
-    expect(getSafeCallbackURL('https://example.com')).toBe('/admin');
-    expect(getSafeCallbackURL('//example.com')).toBe('/admin');
-    expect(getSafeCallbackURL('/%40evil')).toBe('/admin');
-    expect(getSafeCallbackURL('/\\evil')).toBe('/admin');
+    expect(getSafeCallbackURL('https://example.com')).toBe('/account');
+    expect(getSafeCallbackURL('//example.com')).toBe('/account');
+    expect(getSafeCallbackURL('/%40evil')).toBe('/account');
+    expect(getSafeCallbackURL('/\\evil')).toBe('/account');
   });
 
   it('requires matching strong passwords for sign-up', () => {

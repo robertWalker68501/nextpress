@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { BookOpen } from 'lucide-react';
 
 import { ModeToggle } from '@/components/mode-toggle';
+import { NextPressLogo } from '@/components/nextpress-logo';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -15,12 +15,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         href='/'
         className='mb-8 flex items-center gap-2 text-lg font-semibold'
       >
-        <span className='bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-xl'>
-          <BookOpen
-            className='size-5'
-            aria-hidden='true'
-          />
-        </span>
+        <NextPressLogo
+          size={36}
+          alt=''
+          priority
+        />
         NextPress
       </Link>
       {children}

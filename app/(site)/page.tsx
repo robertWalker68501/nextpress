@@ -1,10 +1,12 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 
+import { HomeLanding } from '@/components/public/home-landing';
 import { PostList } from '@/components/public/post-card';
 import { Pagination } from '@/components/public/pagination';
 import { PublicContentView } from '@/components/public/public-content-view';
 import { SiteMain } from '@/components/public/site-shell';
+import { isHomeLandingPage } from '@/lib/cms/home-landing';
 import {
   getPublishedContentById,
   listPublishedPosts,
@@ -39,8 +41,12 @@ async function HomeContent({ searchParams }: HomePageProps) {
     const frontPage = await getPublishedContentById(settings.pageOnFront);
     if (frontPage) {
       return (
-        <SiteMain>
-          <PublicContentView content={frontPage} />
+        <SiteMain className='py-12 lg:py-16'>
+          {isHomeLandingPage(frontPage) ? (
+            <HomeLanding content={frontPage} />
+          ) : (
+            <PublicContentView content={frontPage} />
+          )}
         </SiteMain>
       );
     }

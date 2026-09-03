@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { SignOutButton } from '@/components/auth/sign-out-button';
+import { NextPressLogo } from '@/components/nextpress-logo';
 import {
   Sidebar,
   SidebarContent,
@@ -71,12 +72,11 @@ export function AdminSidebarNav({
               tooltip='NextPress'
               render={<Link href='/admin' />}
             >
-              <span className='bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg'>
-                <BookOpen
-                  className='size-4'
-                  aria-hidden='true'
-                />
-              </span>
+              <NextPressLogo
+                size={32}
+                alt=''
+                priority
+              />
               <span className='grid flex-1 text-left leading-tight'>
                 <span className='truncate font-semibold'>NextPress</span>
                 <span className='text-muted-foreground truncate text-xs'>

@@ -4,6 +4,7 @@ test.describe('public site smoke', () => {
   test('homepage loads', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('img[src*="logo-light.png"]')).toBeVisible();
   });
 
   test('feed is available', async ({ request }) => {
@@ -25,10 +26,23 @@ test.describe('admin access', () => {
   });
 });
 
+test.describe('account access', () => {
+  test('redirects unauthenticated visitors to sign in', async ({ page }) => {
+    await page.goto('/account');
+    await expect(page).toHaveURL(/\/sign-in/);
+  });
+
+  test('sign-in is linked from the public header', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible();
+  });
+});
+
 test.describe('auth pages', () => {
   test('sign-in page renders', async ({ page }) => {
     await page.goto('/sign-in');
-    await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    await expect(page.locator('img[src*="logo-light.png"]')).toBeVisible();
   });
 });
 
@@ -45,6 +59,7 @@ test.describe('theme toggle', () => {
     await toggle.click();
     await page.getByRole('menuitem', { name: 'Dark' }).click();
     await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect(page.locator('img[src*="logo-dark.png"]')).toBeVisible();
 
     await page.goto('/sign-in');
     await expect(page.locator('html')).toHaveClass(/dark/);

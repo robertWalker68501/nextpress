@@ -43,14 +43,28 @@ export const verificationSchema = z.object({
   email: z.email('Enter a valid email address.').trim().toLowerCase(),
 });
 
-export function getSafeCallbackURL(value?: string | null) {
-  if (!value) return '/admin';
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Enter your current password.'),
+    password,
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  });
+
+export function getSafeCallbackURL(
+  value?: string | null,
+  fallback = '/account'
+) {
+  if (!value) return fallback;
 
   let decoded = value;
   try {
     decoded = decodeURIComponent(value);
   } catch {
-    return '/admin';
+    return fallback;
   }
 
   if (
@@ -59,7 +73,7 @@ export function getSafeCallbackURL(value?: string | null) {
     decoded.includes('\\') ||
     decoded.includes('@')
   ) {
-    return '/admin';
+    return fallback;
   }
 
   return decoded;
@@ -70,3 +84,4 @@ export type SignUpValues = z.infer<typeof signUpSchema>;
 export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 export type VerificationValues = z.infer<typeof verificationSchema>;
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;

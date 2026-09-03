@@ -111,6 +111,33 @@ export async function replyToCommentRecord(
   });
 }
 
+export async function deleteOwnCommentRecord(
+  actor: { id: string; email: string },
+  id: string
+) {
+  const comment = await prisma.comment.findUnique({ where: { id } });
+
+  if (!comment || comment.deletedAt || comment.status === CommentStatus.TRASH) {
+    throw new Error('Comment was not found.');
+  }
+
+  const ownsComment =
+    comment.authorUserId === actor.id ||
+    (!comment.authorUserId && comment.authorEmail === actor.email);
+
+  if (!ownsComment) {
+    throw new Error('You cannot delete this comment.');
+  }
+
+  return prisma.comment.update({
+    where: { id },
+    data: {
+      status: CommentStatus.TRASH,
+      deletedAt: new Date(),
+    },
+  });
+}
+
 export async function bulkUpdateCommentStatusRecord(
   actor: Actor,
   ids: string[],

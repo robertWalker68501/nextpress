@@ -4,11 +4,14 @@ import {
   Container,
   Head,
   Html,
+  Img,
   Preview,
   Section,
   Tailwind,
   Text,
 } from 'react-email';
+
+import { nextPressLogoAbsoluteUrl } from '@/lib/nextpress-logo';
 
 interface PasswordResetEmailProps {
   userName: string;
@@ -28,6 +31,12 @@ export function PasswordResetEmail({
         <Body className='bg-white font-sans'>
           <Preview>Reset your {appName} password</Preview>
           <Container className='mx-auto py-5 pb-12'>
+            <Img
+              src={nextPressLogoAbsoluteUrl('light')}
+              alt={appName}
+              width={48}
+              height={48}
+            />
             <Text className='text-[16px] leading-6.5'>Hi {userName},</Text>
             <Text className='text-[16px] leading-6.5'>
               We received a request to reset your {appName} password. Use the

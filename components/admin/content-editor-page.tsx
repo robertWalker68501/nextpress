@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import { notFound } from 'next/navigation';
 
 import {
@@ -19,9 +20,15 @@ import { getAvailableStatuses } from '@/lib/cms/workflow';
 export async function ContentEditorPage({
   type,
   id,
+  redirectBase,
+  saveAction,
+  showRevisions = true,
 }: {
   type: ContentType;
   id?: string;
+  redirectBase?: string;
+  saveAction?: ComponentProps<typeof ContentEditorForm>['saveAction'];
+  showRevisions?: boolean;
 }) {
   const actor = await requireCapability('editContent');
   const content = id ? await getContentForEditor(actor, id) : null;
@@ -113,9 +120,13 @@ export async function ContentEditorPage({
           label,
           value,
         }))}
+        redirectBase={redirectBase}
+        saveAction={saveAction}
       />
 
-      {content ? <ContentRevisionsPanel contentId={content.id} /> : null}
+      {content && showRevisions ? (
+        <ContentRevisionsPanel contentId={content.id} />
+      ) : null}
     </div>
   );
 }

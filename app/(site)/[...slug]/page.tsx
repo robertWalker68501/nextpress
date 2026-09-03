@@ -2,8 +2,10 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { HomeLanding } from '@/components/public/home-landing';
 import { PublicContentView } from '@/components/public/public-content-view';
 import { SiteMain } from '@/components/public/site-shell';
+import { isHomeLandingPage } from '@/lib/cms/home-landing';
 import {
   getPublishedPageBySlugPath,
   getPublishedPostBySlug,
@@ -73,6 +75,14 @@ async function SlugContent({ params }: SlugPageProps) {
   const content = await resolvePublicContent(slug);
 
   if (!content) notFound();
+
+  if (isHomeLandingPage(content)) {
+    return (
+      <SiteMain className='py-12 lg:py-16'>
+        <HomeLanding content={content} />
+      </SiteMain>
+    );
+  }
 
   return (
     <SiteMain>

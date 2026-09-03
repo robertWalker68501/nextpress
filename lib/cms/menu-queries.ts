@@ -4,7 +4,7 @@ import { cacheTag } from 'next/cache';
 
 import prisma from '@/lib/prisma';
 import { buildPageSlugPath } from '@/lib/cms/page-path';
-import { getContentPublicUrl } from '@/lib/cms/public-urls';
+import { getContentPublicUrl, isAdminPublicPath } from '@/lib/cms/public-urls';
 
 export type PublicMenuItem = {
   id: string;
@@ -66,10 +66,26 @@ function buildMenuTree(
         href: resolveHref(item),
         openInNewTab: item.openInNewTab,
         children: mapItems(item.id),
-      }));
+      }))
+      .filter((item) => !isAdminPublicPath(item.href));
   }
 
   return mapItems(null);
+}
+
+export function withoutAdminMenuItems(
+  items: PublicMenuItem[]
+): PublicMenuItem[] {
+  return items
+    .filter(
+      (item) =>
+        !isAdminPublicPath(item.href) &&
+        item.label.trim().toLowerCase() !== 'admin'
+    )
+    .map((item) => ({
+      ...item,
+      children: withoutAdminMenuItems(item.children),
+    }));
 }
 
 export async function getPublicMenuBySlug(

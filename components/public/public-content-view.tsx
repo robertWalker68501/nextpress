@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
@@ -14,6 +15,7 @@ import {
   getTagUrl,
 } from '@/lib/cms/public-urls';
 import { sanitizePlainText } from '@/lib/cms/sanitize';
+import { getCurrentUser } from '@/lib/auth/session';
 
 export async function PublicContentView({
   content,
@@ -126,11 +128,37 @@ export async function PublicContentView({
           <p className='text-muted-foreground text-sm'>No comments yet.</p>
         )}
         {isCommentsOpen(content.commentPolicy) ? (
-          <CommentForm contentId={content.id} />
+          <Suspense
+            fallback={
+              <p className='text-muted-foreground text-sm'>
+                Loading comment form…
+              </p>
+            }
+          >
+            <AuthenticatedCommentForm contentId={content.id} />
+          </Suspense>
         ) : (
           <p className='text-muted-foreground text-sm'>Comments are closed.</p>
         )}
       </section>
     </article>
+  );
+}
+
+async function AuthenticatedCommentForm({ contentId }: { contentId: string }) {
+  const user = await getCurrentUser();
+
+  return (
+    <CommentForm
+      contentId={contentId}
+      user={
+        user
+          ? {
+              name: user.displayName ?? user.name,
+              email: user.email,
+            }
+          : null
+      }
+    />
   );
 }

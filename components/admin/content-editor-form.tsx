@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import { saveContentAction } from '@/app/admin/content-actions';
+import type { ActionResult } from '@/lib/cms/validation';
+import { ContentType } from '@/app/generated/prisma/client';
 import { getContentStatusLabel } from '@/components/admin/content-status-badge';
 import { FileUploadField } from '@/components/form-fields/FileUploadField';
 import { FormFieldControl } from '@/components/form-fields/FormFieldControl';
@@ -37,11 +39,17 @@ export function ContentEditorForm({
   availableStatuses,
   categories,
   parentPages,
+  redirectBase,
+  saveAction = saveContentAction,
 }: {
   defaultValues: ContentEditorInput;
   availableStatuses: ContentStatus[];
   categories: EditorOption[];
   parentPages: EditorOption[];
+  redirectBase?: string;
+  saveAction?: (
+    input: unknown
+  ) => Promise<ActionResult<{ id: string; type: ContentType }>>;
 }) {
   const router = useRouter();
   const form = useForm<ContentEditorInput>({
@@ -62,7 +70,7 @@ export function ContentEditorForm({
 
   async function onSubmit(values: ContentEditorInput) {
     form.clearErrors();
-    const result = await saveContentAction({
+    const result = await saveAction({
       ...values,
       parentId: values.parentId === 'NONE' ? null : values.parentId,
     });
@@ -91,7 +99,7 @@ export function ContentEditorForm({
     });
 
     if (!values.id) {
-      router.push(`/admin/${segment}/${result.data.id}`);
+      router.push(`${redirectBase ?? `/admin/${segment}`}/${result.data.id}`);
     } else {
       router.refresh();
     }

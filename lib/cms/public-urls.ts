@@ -44,3 +44,8 @@ export function getContentPublicUrl(
 
   return getPostUrl(slug);
 }
+
+export function isAdminPublicPath(href: string) {
+  const path = href.split(/[?#]/)[0] ?? href;
+  return path === '/admin' || path.startsWith('/admin/');
+}

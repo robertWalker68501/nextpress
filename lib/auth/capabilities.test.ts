@@ -15,9 +15,16 @@ describe('role capabilities', () => {
     expect(hasCapability(UserRole.ADMINISTRATOR, 'manageMenus')).toBe(true);
   });
 
-  it('limits subscribers to public-site access', () => {
+  it('keeps subscribers out of administration', () => {
     expect(hasCapability(UserRole.SUBSCRIBER, 'accessAdmin')).toBe(false);
-    expect(hasCapability(UserRole.SUBSCRIBER, 'editContent')).toBe(false);
+    expect(hasCapability(UserRole.SUBSCRIBER, 'manageSettings')).toBe(false);
+    expect(hasCapability(UserRole.SUBSCRIBER, 'publishContent')).toBe(false);
+  });
+
+  it('lets subscribers manage their own posts from the account area', () => {
+    expect(hasCapability(UserRole.SUBSCRIBER, 'editContent')).toBe(true);
+    expect(hasCapability(UserRole.SUBSCRIBER, 'deleteContent')).toBe(true);
+    expect(hasCapability(UserRole.SUBSCRIBER, 'uploadFiles')).toBe(true);
   });
 
   it('allows contributors to edit only their own unpublished content', () => {

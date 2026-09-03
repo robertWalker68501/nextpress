@@ -4,11 +4,14 @@ import {
   Container,
   Head,
   Html,
+  Img,
   Preview,
   Section,
   Tailwind,
   Text,
 } from 'react-email';
+
+import { nextPressLogoAbsoluteUrl } from '@/lib/nextpress-logo';
 
 interface VerificationEmailProps {
   userName: string;
@@ -27,6 +30,12 @@ export const VerificationEmail = ({
       <Body className='font-koala bg-white'>
         <Preview>Verify your email for {appName}</Preview>
         <Container className='mx-auto py-5 pb-12'>
+          <Img
+            src={nextPressLogoAbsoluteUrl('light')}
+            alt={appName}
+            width={48}
+            height={48}
+          />
           <Text className='text-[16px] leading-6.5'>Hi {userName},</Text>
           <Text className='text-[16px] leading-6.5'>
             Welcome to NextPress, Thank you for signing up for {appName}. Please
