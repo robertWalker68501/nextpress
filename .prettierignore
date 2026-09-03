@@ -7,3 +7,4 @@ out
 # Local agent reference material is not application source.
 .agents
 .claude
+.windsurf

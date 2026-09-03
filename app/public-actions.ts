@@ -25,7 +25,9 @@ export async function submitCommentAction(
     return {
       ok: false,
       message:
-        error instanceof Error ? error.message : 'Comment could not be submitted.',
+        error instanceof Error
+          ? error.message
+          : 'Comment could not be submitted.',
     };
   }
 }

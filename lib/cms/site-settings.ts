@@ -36,7 +36,8 @@ export type SiteSettings = {
 const defaultSettings: SiteSettings = {
   siteTitle: 'NextPress',
   siteTagline: 'A modern publishing platform',
-  siteDescription: 'A modern publishing platform and content management system.',
+  siteDescription:
+    'A modern publishing platform and content management system.',
   postsPerPage: 10,
   defaultCommentStatus: CommentPolicy.OPEN,
   dateFormat: 'MMMM d, yyyy',

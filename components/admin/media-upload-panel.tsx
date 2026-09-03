@@ -8,10 +8,7 @@ import { registerMediaAction } from '@/app/admin/media-actions';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
 import { cn } from '@/lib/utils';
-import {
-  normalizeUploadThingFile,
-  useUploadThing,
-} from '@/utils/uploadthing';
+import { normalizeUploadThingFile, useUploadThing } from '@/utils/uploadthing';
 
 const accept = 'image/*,video/*,audio/*';
 
@@ -108,7 +105,9 @@ export function MediaUploadPanel() {
     );
 
     if (invalidFile) {
-      setUploadError('Only image, audio, and video files can be uploaded here.');
+      setUploadError(
+        'Only image, audio, and video files can be uploaded here.'
+      );
       return;
     }
 

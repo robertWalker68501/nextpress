@@ -54,7 +54,9 @@ async function CategoryContent({ params, searchParams }: ArchivePageProps) {
             {archive.term.name}
           </h1>
           {archive.term.description ? (
-            <p className='text-muted-foreground mt-3'>{archive.term.description}</p>
+            <p className='text-muted-foreground mt-3'>
+              {archive.term.description}
+            </p>
           ) : null}
         </header>
         <PostList items={archive.items} />
@@ -62,7 +64,9 @@ async function CategoryContent({ params, searchParams }: ArchivePageProps) {
           page={archive.page}
           totalPages={archive.totalPages}
           hrefForPage={(nextPage) =>
-            nextPage > 1 ? `/category/${slug}?page=${nextPage}` : `/category/${slug}`
+            nextPage > 1
+              ? `/category/${slug}?page=${nextPage}`
+              : `/category/${slug}`
           }
         />
       </div>

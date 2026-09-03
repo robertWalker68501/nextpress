@@ -72,7 +72,9 @@ function buildMenuTree(
   return mapItems(null);
 }
 
-export async function getPublicMenuBySlug(slug: string): Promise<PublicMenu | null> {
+export async function getPublicMenuBySlug(
+  slug: string
+): Promise<PublicMenu | null> {
   'use cache';
   cacheTag('menus', `menus:${slug}`);
 

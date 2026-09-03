@@ -79,7 +79,12 @@ export function SiteMain({
   className?: string;
 }) {
   return (
-    <main className={cn('mx-auto w-full max-w-6xl flex-1 px-6 py-10 lg:px-8', className)}>
+    <main
+      className={cn(
+        'mx-auto w-full max-w-6xl flex-1 px-6 py-10 lg:px-8',
+        className
+      )}
+    >
       {children}
     </main>
   );

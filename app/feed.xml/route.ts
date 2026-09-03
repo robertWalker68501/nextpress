@@ -19,7 +19,8 @@ export async function GET() {
   const items = entries
     .map((entry) => {
       const link = new URL(getPostUrl(entry.slug), baseUrl).toString();
-      const pubDate = entry.publishedAt?.toUTCString() ?? new Date().toUTCString();
+      const pubDate =
+        entry.publishedAt?.toUTCString() ?? new Date().toUTCString();
       const description = entry.excerpt ?? '';
       const author = entry.author.displayName ?? entry.author.name;
 

@@ -1,11 +1,7 @@
 import { ContentType, TermType } from '@/app/generated/prisma/client';
 import { getSitemapEntries } from '@/lib/cms/public-queries';
 import { buildPagePublicPath } from '@/lib/cms/page-path';
-import {
-  getCategoryUrl,
-  getPostUrl,
-  getTagUrl,
-} from '@/lib/cms/public-urls';
+import { getCategoryUrl, getPostUrl, getTagUrl } from '@/lib/cms/public-urls';
 
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';

@@ -54,18 +54,18 @@ utils/                  Client-side integration helpers
 Copy `.env.example` to `.env` and configure the values listed there. Important
 variables include:
 
-| Variable | Purpose |
-| --- | --- |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Session signing secret (32+ random characters) |
-| `BETTER_AUTH_URL` / `NEXT_PUBLIC_APP_URL` | Application base URL |
-| `BOOTSTRAP_ADMIN_EMAIL` | Promote an existing account to Administrator on seed |
-| `SEED_DEMO` | Set to `true` to add sample posts, pages, and menus |
-| `CRON_SECRET` | Bearer token for `POST /api/cron/publish-scheduled` |
-| `UPLOADTHING_TOKEN` | Media uploads and permanent file deletion |
-| `NEXT_PUBLIC_TINYMCE_API_KEY` | Rich-text editor in the admin |
-| `RESEND_API_KEY` / `EMAIL_FROM` | Verification and password-reset email |
-| OAuth variables | Enable Google and/or GitHub sign-in buttons |
+| Variable                                  | Purpose                                              |
+| ----------------------------------------- | ---------------------------------------------------- |
+| `DATABASE_URL`                            | PostgreSQL connection string                         |
+| `BETTER_AUTH_SECRET`                      | Session signing secret (32+ random characters)       |
+| `BETTER_AUTH_URL` / `NEXT_PUBLIC_APP_URL` | Application base URL                                 |
+| `BOOTSTRAP_ADMIN_EMAIL`                   | Promote an existing account to Administrator on seed |
+| `SEED_DEMO`                               | Set to `true` to add sample posts, pages, and menus  |
+| `CRON_SECRET`                             | Bearer token for `POST /api/cron/publish-scheduled`  |
+| `UPLOADTHING_TOKEN`                       | Media uploads and permanent file deletion            |
+| `NEXT_PUBLIC_TINYMCE_API_KEY`             | Rich-text editor in the admin                        |
+| `RESEND_API_KEY` / `EMAIL_FROM`           | Verification and password-reset email                |
+| OAuth variables                           | Enable Google and/or GitHub sign-in buttons          |
 
 OAuth credentials are required only for providers that are enabled. Never
 commit `.env` files or service credentials.

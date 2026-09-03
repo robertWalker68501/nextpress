@@ -17,7 +17,10 @@ export function PublicNavMenu({
   return (
     <nav
       aria-label='Site navigation'
-      className={cn('flex flex-wrap items-center justify-end gap-4 text-sm', className)}
+      className={cn(
+        'flex flex-wrap items-center justify-end gap-4 text-sm',
+        className
+      )}
     >
       {items.map((item) => (
         <NavItem
@@ -44,7 +47,7 @@ function NavItem({ item }: { item: PublicMenuItem }) {
         >
           {item.label}
         </Link>
-        <div className='bg-popover absolute top-full right-0 z-20 mt-2 hidden min-w-40 rounded-md border p-2 shadow-md group-hover:block group-focus-within:block'>
+        <div className='bg-popover absolute top-full right-0 z-20 mt-2 hidden min-w-40 rounded-md border p-2 shadow-md group-focus-within:block group-hover:block'>
           {item.children.map((child) => (
             <Link
               key={child.id}

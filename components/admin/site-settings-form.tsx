@@ -144,7 +144,10 @@ export function SiteSettingsForm({
             type='select'
             label='Default comment status'
             options={[
-              { label: 'Open', value: CommentPolicyValue.OPEN as CommentPolicy },
+              {
+                label: 'Open',
+                value: CommentPolicyValue.OPEN as CommentPolicy,
+              },
               {
                 label: 'Closed',
                 value: CommentPolicyValue.CLOSED as CommentPolicy,

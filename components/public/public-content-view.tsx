@@ -15,7 +15,11 @@ import {
 } from '@/lib/cms/public-urls';
 import { sanitizePlainText } from '@/lib/cms/sanitize';
 
-export async function PublicContentView({ content }: { content: PublicContent }) {
+export async function PublicContentView({
+  content,
+}: {
+  content: PublicContent;
+}) {
   const comments = await getApprovedComments(content.id);
   const authorName = content.author.displayName ?? content.author.name;
   const categories = content.terms
@@ -73,7 +77,7 @@ export async function PublicContentView({ content }: { content: PublicContent })
               <Link
                 key={term.id}
                 href={getTagUrl(term.slug)}
-                className='border hover:border-primary/40 rounded-full px-3 py-1'
+                className='hover:border-primary/40 rounded-full border px-3 py-1'
               >
                 #{term.name}
               </Link>

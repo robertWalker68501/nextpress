@@ -32,7 +32,9 @@ async function SearchContent({ searchParams }: SearchPageProps) {
     <SiteMain>
       <div className='grid gap-8'>
         <header className='grid gap-4 border-b pb-8'>
-          <h1 className='font-heading text-3xl font-bold tracking-tight'>Search</h1>
+          <h1 className='font-heading text-3xl font-bold tracking-tight'>
+            Search
+          </h1>
           <form
             action='/search'
             className='flex gap-2'

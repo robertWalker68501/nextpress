@@ -53,7 +53,9 @@ async function AuthorContent({ params, searchParams }: AuthorPageProps) {
       <div className='grid gap-8'>
         <header className='border-b pb-8'>
           <p className='text-muted-foreground text-sm'>Author</p>
-          <h1 className='font-heading text-3xl font-bold tracking-tight'>{name}</h1>
+          <h1 className='font-heading text-3xl font-bold tracking-tight'>
+            {name}
+          </h1>
           {archive.author.bio ? (
             <p className='text-muted-foreground mt-3'>{archive.author.bio}</p>
           ) : null}
@@ -63,7 +65,9 @@ async function AuthorContent({ params, searchParams }: AuthorPageProps) {
           page={archive.page}
           totalPages={archive.totalPages}
           hrefForPage={(nextPage) =>
-            nextPage > 1 ? `/author/${slug}?page=${nextPage}` : `/author/${slug}`
+            nextPage > 1
+              ? `/author/${slug}?page=${nextPage}`
+              : `/author/${slug}`
           }
         />
       </div>

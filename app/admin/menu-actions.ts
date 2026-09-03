@@ -31,7 +31,8 @@ export async function saveMenuAction(input: unknown): Promise<ActionResult> {
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : 'Menu could not be saved.',
+      message:
+        error instanceof Error ? error.message : 'Menu could not be saved.',
     };
   }
 }

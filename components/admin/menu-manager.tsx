@@ -215,7 +215,9 @@ export function MenuManager({
                   <SelectContent>
                     <SelectItem value='none'>No parent</SelectItem>
                     {items
-                      .filter((candidate) => candidate.clientId !== item.clientId)
+                      .filter(
+                        (candidate) => candidate.clientId !== item.clientId
+                      )
                       .map((candidate) => (
                         <SelectItem
                           key={candidate.clientId}

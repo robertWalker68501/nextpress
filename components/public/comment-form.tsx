@@ -8,7 +8,10 @@ import { useForm } from 'react-hook-form';
 import { submitCommentAction } from '@/app/public-actions';
 import { FormFieldControl } from '@/components/form-fields/FormFieldControl';
 import { Button } from '@/components/ui/button';
-import { type PublicCommentInput, publicCommentSchema } from '@/lib/cms/validation';
+import {
+  type PublicCommentInput,
+  publicCommentSchema,
+} from '@/lib/cms/validation';
 
 export function CommentForm({ contentId }: { contentId: string }) {
   const router = useRouter();

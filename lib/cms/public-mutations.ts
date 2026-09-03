@@ -1,6 +1,10 @@
 import 'server-only';
 
-import { CommentPolicy, CommentStatus, ContentStatus } from '@/app/generated/prisma/client';
+import {
+  CommentPolicy,
+  CommentStatus,
+  ContentStatus,
+} from '@/app/generated/prisma/client';
 import prisma from '@/lib/prisma';
 import { sanitizePlainText } from '@/lib/cms/sanitize';
 

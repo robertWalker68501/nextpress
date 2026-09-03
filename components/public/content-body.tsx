@@ -13,7 +13,7 @@ export function ContentBody({
   return (
     <div
       className={cn(
-        'public-content max-w-none leading-7 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_h2]:font-heading [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_img]:rounded-lg [&_img]:border [&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6',
+        'public-content [&_a]:text-primary [&_h2]:font-heading max-w-none leading-7 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_img]:rounded-lg [&_img]:border [&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6',
         className
       )}
       dangerouslySetInnerHTML={{ __html: sanitized }}

@@ -4,7 +4,10 @@ import prisma from '@/lib/prisma';
 
 import type { MenuEditorInput } from './validation';
 
-export async function saveMenuItemsRecord(menuId: string, input: MenuEditorInput) {
+export async function saveMenuItemsRecord(
+  menuId: string,
+  input: MenuEditorInput
+) {
   const menu = await prisma.menu.findUnique({ where: { id: menuId } });
   if (!menu) throw new Error('Menu was not found.');
 
@@ -23,7 +26,8 @@ export async function saveMenuItemsRecord(menuId: string, input: MenuEditorInput
           sortOrder: item.sortOrder ?? index,
           openInNewTab: item.openInNewTab ?? false,
           url: item.linkType === 'custom' ? item.url?.trim() || null : null,
-          contentId: item.linkType === 'content' ? item.contentId ?? null : null,
+          contentId:
+            item.linkType === 'content' ? (item.contentId ?? null) : null,
         },
       });
       idMap.set(item.clientId, created.id);
