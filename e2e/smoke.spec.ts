@@ -31,3 +31,36 @@ test.describe('auth pages', () => {
     await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible();
   });
 });
+
+test.describe('theme toggle', () => {
+  test('switches between light and dark on the public site', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/');
+
+    const toggle = page.getByRole('button', { name: 'Toggle theme' });
+    await expect(toggle).toBeVisible();
+
+    await toggle.click();
+    await page.getByRole('menuitem', { name: 'Dark' }).click();
+    await expect(page.locator('html')).toHaveClass(/dark/);
+
+    await page.goto('/sign-in');
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect(
+      page.getByRole('button', { name: 'Toggle theme' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Toggle theme' }).click();
+    await page.getByRole('menuitem', { name: 'Light' }).click();
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+  });
+
+  test('is available on the sign-in page', async ({ page }) => {
+    await page.goto('/sign-in');
+    await expect(
+      page.getByRole('button', { name: 'Toggle theme' })
+    ).toBeVisible();
+  });
+});

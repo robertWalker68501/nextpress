@@ -4,6 +4,7 @@ import { Suspense, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { ModeToggle } from '@/components/mode-toggle';
 import {
   Sidebar,
   SidebarInset,
@@ -77,12 +78,15 @@ export function AdminShellFrame({
             >
               <AdminPageTitle />
             </Suspense>
-            <Link
-              href='/'
-              className='text-muted-foreground hover:text-foreground ml-auto text-sm'
-            >
-              View site
-            </Link>
+            <div className='ml-auto flex items-center gap-3'>
+              <Link
+                href='/'
+                className='text-muted-foreground hover:text-foreground text-sm'
+              >
+                View site
+              </Link>
+              <ModeToggle />
+            </div>
           </header>
           <div className='flex flex-1 flex-col p-4 sm:p-6 lg:p-8'>
             {children}

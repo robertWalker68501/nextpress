@@ -4,6 +4,7 @@ import { getPublicMenuBySlug } from '@/lib/cms/menu-queries';
 import { getSiteSettings } from '@/lib/cms/site-settings';
 import { cn } from '@/lib/utils';
 
+import { ModeToggle } from '@/components/mode-toggle';
 import { PublicNavMenu } from '@/components/public/public-nav-menu';
 
 export async function SiteHeader() {
@@ -28,7 +29,10 @@ export async function SiteHeader() {
             </p>
           ) : null}
         </div>
-        <PublicNavMenu items={primaryMenu?.items ?? []} />
+        <div className='flex shrink-0 items-center gap-3'>
+          <PublicNavMenu items={primaryMenu?.items ?? []} />
+          <ModeToggle />
+        </div>
       </div>
     </header>
   );

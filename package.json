@@ -2,6 +2,9 @@
   "name": "nextpress",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "effect": "3.20.0"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:webpack": "next dev --webpack",

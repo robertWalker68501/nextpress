@@ -2,9 +2,14 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 
+import { ModeToggle } from '@/components/mode-toggle';
+
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className='relative flex min-h-screen flex-1 flex-col items-center justify-center overflow-hidden px-6 py-12'>
+      <div className='absolute top-4 right-4 z-10 sm:top-6 sm:right-6'>
+        <ModeToggle />
+      </div>
       <div className='bg-primary/10 absolute inset-x-0 top-0 -z-10 h-72 blur-3xl' />
       <Link
         href='/'
