@@ -2,8 +2,6 @@ import { Resend } from 'resend';
 
 import PasswordResetEmail from '@/emails/password-reset-email';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 type PasswordResetEmailOptions = {
   to: string;
   resetUrl: string;
@@ -15,6 +13,8 @@ export async function sendPasswordResetEmail({
   resetUrl,
   userName,
 }: PasswordResetEmailOptions) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   await resend.emails.send({
     from: process.env.EMAIL_FROM!,
     to,

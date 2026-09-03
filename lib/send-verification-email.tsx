@@ -1,7 +1,6 @@
 import { Resend } from 'resend';
 
 import VerificationEmail from '@/emails/verification-email';
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 type EmailProps = {
   to: string;
@@ -14,6 +13,8 @@ export const sendVerificationEmail = async ({
   verificationUrl,
   userName,
 }: EmailProps) => {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   await resend.emails.send({
     from: process.env.EMAIL_FROM!,
     to,
