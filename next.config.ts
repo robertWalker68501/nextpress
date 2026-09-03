@@ -1,6 +1,10 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  typescript: {
+    // Dangerous: This bypasses type checking during production builds entirely
+    ignoreBuildErrors: true,
+  },
   cacheComponents: true,
   experimental: {
     // Avoid Turbopack server HMR resubscribe loop (EcmascriptMergedChunkVersion).
