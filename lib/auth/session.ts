@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+
 import { io } from 'next/cache';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -17,16 +18,6 @@ export class AuthorizationError extends Error {
     this.name = 'AuthorizationError';
   }
 }
-
-type AuthSessionUser = {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image?: string | null;
-  role?: UserRole;
-  displayName?: string | null;
-};
 
 export type CurrentUser = {
   id: string;
@@ -49,22 +40,10 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 
   if (!session?.user) return null;
 
-  const sessionUser = session.user as AuthSessionUser;
-
-  if (sessionUser.role) {
-    return {
-      id: sessionUser.id,
-      name: sessionUser.name,
-      displayName: sessionUser.displayName ?? null,
-      email: sessionUser.email,
-      emailVerified: sessionUser.emailVerified,
-      image: sessionUser.image ?? null,
-      role: sessionUser.role,
-    };
-  }
-
+  // Always read the live profile and role from the database so admin user
+  // management changes take effect on the next request.
   return prisma.user.findUnique({
-    where: { id: sessionUser.id },
+    where: { id: session.user.id },
     select: {
       id: true,
       name: true,

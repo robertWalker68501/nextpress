@@ -23,6 +23,7 @@ const adminNavigation = [
   { href: '/admin/taxonomy/categories', label: 'Categories' },
   { href: '/admin/taxonomy/tags', label: 'Tags' },
   { href: '/admin/appearance/menus', label: 'Menus' },
+  { href: '/admin/users', label: 'Users' },
   { href: '/admin/settings', label: 'Settings' },
 ] as const;
 

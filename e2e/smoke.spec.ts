@@ -30,6 +30,13 @@ test.describe('admin access', () => {
     await page.goto('/admin/settings');
     await expect(page).toHaveURL(/\/sign-in/);
   });
+
+  test('redirects unauthenticated visitors away from users', async ({
+    page,
+  }) => {
+    await page.goto('/admin/users');
+    await expect(page).toHaveURL(/\/sign-in/);
+  });
 });
 
 test.describe('account access', () => {

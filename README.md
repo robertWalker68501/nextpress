@@ -8,6 +8,7 @@ authenticated administration area, and a familiar editorial workflow.
 
 - Posts and hierarchical pages with draft, review, scheduled, published, private, and trash states
 - WordPress-style Administrator, Editor, Author, Contributor, and Subscriber roles
+- Administrator user management for creating accounts, assigning roles, and deleting users
 - Categories, tags, revisions, comments, and media management
 - Menus, site settings, search, RSS feed, sitemap, and SEO metadata
 - Email/password authentication, email verification, and optional Google/GitHub sign-in
@@ -136,7 +137,7 @@ On a clean PostgreSQL database:
 2. Run `npm run db:generate`, `npm run db:migrate`, and `npm run db:seed`.
 3. Sign up, set `BOOTSTRAP_ADMIN_EMAIL`, and run `npm run db:seed` again.
 4. Start the app with `npm run dev` or `npm run build && npm run start`.
-5. Verify sign-in, admin dashboard, content editor, media upload, comments, settings, menus, and the public homepage.
+5. Verify sign-in, admin dashboard, content editor, media upload, comments, users, settings, menus, and the public homepage.
 
 ### Scheduled publishing
 
@@ -160,8 +161,7 @@ curl -X POST https://your-domain.example/api/cron/publish-scheduled \
 ## Status
 
 NextPress core CMS functionality is implemented for single-site publishing.
-User management UI and plugin-style extensibility are out of scope for the
-current release.
+Plugin-style extensibility is out of scope for the current release.
 
 ## License
 

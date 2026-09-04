@@ -1,8 +1,10 @@
 import { Suspense } from 'react';
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { ContentStatus, ContentType } from '@/app/generated/prisma/client';
+import { AdminContentSkeleton } from '@/components/admin/admin-shell';
 import { ContentStatusBadge } from '@/components/admin/content-status-badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AdminContentSkeleton } from '@/components/admin/admin-shell';
 import { hasCapability } from '@/lib/auth/capabilities';
 import { requireCapability } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
@@ -25,43 +26,47 @@ export const metadata: Metadata = {
 
 async function AdminDashboardContent() {
   const user = await requireCapability('accessAdmin');
+  const canManageUsers = hasCapability(user.role, 'manageUsers');
   const scope = hasCapability(user.role, 'editOthersContent')
     ? {}
     : { authorId: user.id };
   const activeScope = { ...scope, deletedAt: null };
 
-  const [posts, pages, pendingReview, published, recent] = await Promise.all([
-    prisma.content.count({
-      where: { ...activeScope, type: ContentType.POST },
-    }),
-    prisma.content.count({
-      where: { ...activeScope, type: ContentType.PAGE },
-    }),
-    prisma.content.count({
-      where: { ...activeScope, status: ContentStatus.PENDING_REVIEW },
-    }),
-    prisma.content.count({
-      where: { ...activeScope, status: ContentStatus.PUBLISHED },
-    }),
-    prisma.content.findMany({
-      where: activeScope,
-      orderBy: { updatedAt: 'desc' },
-      take: 5,
-      select: {
-        id: true,
-        title: true,
-        type: true,
-        status: true,
-        updatedAt: true,
-      },
-    }),
-  ]);
+  const [posts, pages, pendingReview, published, recent, users] =
+    await Promise.all([
+      prisma.content.count({
+        where: { ...activeScope, type: ContentType.POST },
+      }),
+      prisma.content.count({
+        where: { ...activeScope, type: ContentType.PAGE },
+      }),
+      prisma.content.count({
+        where: { ...activeScope, status: ContentStatus.PENDING_REVIEW },
+      }),
+      prisma.content.count({
+        where: { ...activeScope, status: ContentStatus.PUBLISHED },
+      }),
+      prisma.content.findMany({
+        where: activeScope,
+        orderBy: { updatedAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          title: true,
+          type: true,
+          status: true,
+          updatedAt: true,
+        },
+      }),
+      canManageUsers ? prisma.user.count() : Promise.resolve(null),
+    ]);
 
   const stats = [
     { label: 'Posts', value: posts },
     { label: 'Pages', value: pages },
     { label: 'Pending review', value: pendingReview },
     { label: 'Published', value: published },
+    ...(users === null ? [] : [{ label: 'Users', value: users }]),
   ];
 
   return (
@@ -75,12 +80,22 @@ async function AdminDashboardContent() {
             Welcome back, {user.displayName ?? user.name}.
           </p>
         </div>
-        <Link
-          className={buttonVariants()}
-          href='/admin/posts/new'
-        >
-          Write a post
-        </Link>
+        <div className='flex flex-wrap gap-2'>
+          <Link
+            className={buttonVariants()}
+            href='/admin/posts/new'
+          >
+            Write a post
+          </Link>
+          {canManageUsers ? (
+            <Link
+              className={buttonVariants({ variant: 'outline' })}
+              href='/admin/users'
+            >
+              Manage users
+            </Link>
+          ) : null}
+        </div>
       </div>
 
       <section className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>

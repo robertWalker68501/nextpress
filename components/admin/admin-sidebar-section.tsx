@@ -1,15 +1,7 @@
-import { UserRole } from '@/app/generated/prisma/client';
 import { AdminSidebarNav } from '@/components/admin/admin-shell';
 import { type Capability, hasCapability } from '@/lib/auth/capabilities';
+import { getRoleLabel } from '@/lib/auth/roles';
 import { requireUser } from '@/lib/auth/session';
-
-const roleLabels = {
-  [UserRole.ADMINISTRATOR]: 'Administrator',
-  [UserRole.EDITOR]: 'Editor',
-  [UserRole.AUTHOR]: 'Author',
-  [UserRole.CONTRIBUTOR]: 'Contributor',
-  [UserRole.SUBSCRIBER]: 'Subscriber',
-} satisfies Record<UserRole, string>;
 
 const navigationCapabilities = [
   { href: '/admin', capability: 'accessAdmin' },
@@ -20,6 +12,7 @@ const navigationCapabilities = [
   { href: '/admin/taxonomy/categories', capability: 'manageTerms' },
   { href: '/admin/taxonomy/tags', capability: 'manageTerms' },
   { href: '/admin/appearance/menus', capability: 'manageMenus' },
+  { href: '/admin/users', capability: 'manageUsers' },
   { href: '/admin/settings', capability: 'manageSettings' },
 ] satisfies Array<{ href: string; capability: Capability }>;
 
@@ -39,7 +32,7 @@ export async function AdminSidebarSection() {
       user={{
         name: user.displayName ?? user.name,
         email: user.email,
-        roleLabel: roleLabels[user.role],
+        roleLabel: getRoleLabel(user.role),
       }}
       allowedHrefs={allowedHrefs}
     />

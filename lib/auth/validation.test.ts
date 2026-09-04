@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { getSafeCallbackURL, signUpSchema } from './validation';
+import {
+  adminCreateUserSchema,
+  adminUpdateUserSchema,
+  getSafeCallbackURL,
+  signUpSchema,
+} from './validation';
 
 describe('authentication validation', () => {
   it('accepts only local callback paths', () => {
@@ -22,5 +27,35 @@ describe('authentication validation', () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it('accepts a complete administrator user create payload', () => {
+    const result = adminCreateUserSchema.safeParse({
+      name: 'Jordan Editor',
+      email: 'jordan@example.com',
+      password: 'Str0ng!pass',
+      confirmPassword: 'Str0ng!pass',
+      role: 'EDITOR',
+      displayName: 'Jordan',
+      bio: '',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('allows an optional password when updating a user', () => {
+    const result = adminUpdateUserSchema.safeParse({
+      id: 'user-1',
+      name: 'Jordan Editor',
+      email: 'jordan@example.com',
+      role: 'AUTHOR',
+      displayName: '',
+      bio: '',
+      emailVerified: true,
+      password: '',
+      confirmPassword: '',
+    });
+
+    expect(result.success).toBe(true);
   });
 });

@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Settings,
   Tags,
+  Users,
 } from 'lucide-react';
 
 import { SignOutButton } from '@/components/auth/sign-out-button';
@@ -43,6 +44,7 @@ export const adminNavigation = [
   },
   { href: '/admin/taxonomy/tags', label: 'Tags', icon: Tags },
   { href: '/admin/appearance/menus', label: 'Menus', icon: BookOpen },
+  { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ] as const;
 

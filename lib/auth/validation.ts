@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { UserRoleValue } from './roles';
+
 const password = z
   .string()
   .min(8, 'Password must be at least 8 characters.')
@@ -54,6 +56,66 @@ export const changePasswordSchema = z
     path: ['confirmPassword'],
   });
 
+const optionalPassword = z.union([password, z.literal('')]).optional();
+
+export const adminCreateUserSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, 'Name must be at least 2 characters.')
+      .max(80),
+    email: z.email('Enter a valid email address.').trim().toLowerCase(),
+    password,
+    confirmPassword: z.string(),
+    role: z.enum(UserRoleValue),
+    displayName: z.string().trim().max(80),
+    bio: z.string().trim().max(500),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  });
+
+export const adminUpdateUserSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z
+      .string()
+      .trim()
+      .min(2, 'Name must be at least 2 characters.')
+      .max(80),
+    email: z.email('Enter a valid email address.').trim().toLowerCase(),
+    role: z.enum(UserRoleValue),
+    displayName: z.string().trim().max(80),
+    bio: z.string().trim().max(500),
+    emailVerified: z.boolean(),
+    password: optionalPassword,
+    confirmPassword: z.string().optional(),
+  })
+  .refine(
+    (values) => !values.password || values.password === values.confirmPassword,
+    {
+      message: 'Passwords do not match.',
+      path: ['confirmPassword'],
+    }
+  );
+
+export const adminDeleteUserSchema = z.object({
+  id: z.string().min(1),
+  reassignToUserId: z
+    .string()
+    .min(1)
+    .optional()
+    .or(z.literal(''))
+    .transform((value) => (value ? value : undefined)),
+});
+
+export const adminBulkUserRoleSchema = z.object({
+  ids: z.array(z.string().min(1)).min(1, 'Select at least one user.'),
+  role: z.enum(UserRoleValue),
+});
+
 export function getSafeCallbackURL(
   value?: string | null,
   fallback = '/account'
@@ -85,3 +147,7 @@ export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 export type VerificationValues = z.infer<typeof verificationSchema>;
 export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;
+export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>;
+export type AdminDeleteUserInput = z.infer<typeof adminDeleteUserSchema>;
+export type AdminBulkUserRoleInput = z.infer<typeof adminBulkUserRoleSchema>;

@@ -13,6 +13,7 @@ describe('role capabilities', () => {
     expect(hasCapability(UserRole.ADMINISTRATOR, 'manageUsers')).toBe(true);
     expect(hasCapability(UserRole.ADMINISTRATOR, 'manageSettings')).toBe(true);
     expect(hasCapability(UserRole.ADMINISTRATOR, 'manageMenus')).toBe(true);
+    expect(hasCapability(UserRole.EDITOR, 'manageUsers')).toBe(false);
   });
 
   it('keeps subscribers out of administration', () => {
